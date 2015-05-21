@@ -3,7 +3,9 @@ Several small scripts and workflows for mac os automation.
 
 clean_itunes
 ======
-v1.0
+- v1.0
+- Requirements: Yosemite
+
 
 Clean your broken or dead tracks perfectly.
 
@@ -13,7 +15,8 @@ $ clean_itunes
 
 watchmv 
 ======
-v0.1
+- v0.1
+- Requirements: nodejs, and several modules from npm
 
 Watching file and moving to specific DIR concurrently. Simple and Useful when you forward only specific handle file format or mime types.
 
