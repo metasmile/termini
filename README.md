@@ -29,7 +29,7 @@ Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]
 # Restrict by mimetypes or extenstions:
  > watchmv --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]
  ```
-Example for import music files to itunes directly.
+Example for forward music files to itunes.
 ```
 $ watchmv itunes ~/Downloads/ ~/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized
 ```
