@@ -14,11 +14,6 @@ var execSync = require("exec-sync");
 var mv = require('mv');
 
 //resolve args
-if(params.length<2){
-	log('Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]');
-	process.exit(1);
-}
-
 if(args['h']){
 	log('Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]');
 	log('\n')
@@ -26,6 +21,13 @@ if(args['h']){
 	log('# Restrict by mimetypes or extenstions:\n > watchmv --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]');
 	process.exit(code=0);
 }
+
+if(params.length<2){
+	log('Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]');
+	process.exit(1);
+}
+
+
 var dir_target = params.length==3 ? params[1] :params[0];
 var dir_to = params.slice(-1)[0];
 
