@@ -31,5 +31,5 @@ Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]
  ```
 Example for forward music files to itunes.
 ```
-$ watchmv itunes ~/Downloads/ ~/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized
+$ watchmv itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
