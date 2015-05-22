@@ -4,7 +4,7 @@ Several small scripts and workflows for mac os automation.
 clean_itunes
 ======
 - v1.0
-- Requirements: Yosemite
+- Requirements: Yosemite(or why not update from mavricks?)
 
 
 Clean your broken or dead tracks perfectly.
@@ -18,7 +18,7 @@ watchmv
 - v0.1
 - Requirements: nodejs, and several modules from npm
 
-Watching file and moving to specific DIR concurrently. Simple and Useful when you forward only specific handle file format or mime types.
+Watching file and moving to specific DIR concurrently. Simple and Useful when you forward only specific file format or mime types.
 
 - Restrict by mimetypes or extenstion.
 - Supported preset : itunes supported types.
@@ -36,3 +36,10 @@ Example for forward music files to itunes.
 ```
 $ watchmv itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
+
+# TODO at v0.2
+- [ ] Add preset 'pdf' : auto compression(for mobile env) and deploy pdf files.
+
+# Someday
+- [ ] Process as persistant worker (start, stop, restart)
+- [ ] Support remote env (capistrano+git integration??)
