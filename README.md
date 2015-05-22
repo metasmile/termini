@@ -37,8 +37,9 @@ Example for forward music files to itunes.
 $ watchmv itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
 ## TODO at v0.2
-- [ ] Add preset 'pdf' : auto compression(for mobile env) and deploy pdf files.
-- [ ] Add preset 'image' : auto compression(for mobile env) and deploy image files.
+- [ ] Add preset 'compress' : auto compression(png, pdf, svg... and all supported files) and deploy files.
+- ex) ``` watchmv compress --allow-extensions=pdf -> only pdf ```
+
 
 ## Someday
 - [ ] Process as persistant worker (start, stop, restart)
