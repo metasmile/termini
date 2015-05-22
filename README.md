@@ -17,6 +17,9 @@ watchmv
 ======
 - v0.1
 - Requirements: nodejs, and several modules from npm
+- Main Philosophy 
+ - very very easy to watch files(minus zero config) 
+ - when detect any file/dir -> any action through pipeline
 
 Watching file and moving to specific DIR concurrently. Simple and Useful when you forward only specific file format or mime types.
 
