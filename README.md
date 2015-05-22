@@ -4,7 +4,7 @@ Several small scripts and workflows for mac os automation.
 clean_itunes
 ======
 - v1.0
-- Requirements: Yosemite(or why not update from mavricks?)
+- Requirements: Yosemite(for use JXA)
 
 
 Clean your broken or dead tracks perfectly.
