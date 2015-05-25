@@ -19,13 +19,15 @@ termini
 
 A smart, fast and easy file hub (or watcher). When you define several actions after watching via specific format or mime types, very useful.
 
-- v0.1
+- v0.2
 - Requirements: nodejs, and several modules from npm
 - Main Philosophy 
  - very very easy to watch files(minus zero config) 
  - when detect any file/dir -> any action through pipeline
 - Restrict by mimetypes or extenstion.
-- Supported preset : itunes supported types.
+- Supported presets
+ - itunes : auto detect itunes supported types
+ - svgmin : auto detect and compress(avg. 40%~60%) svg files.
 - Supported concurrent file operation.
 
 ```
@@ -40,11 +42,13 @@ Example for forward music files to itunes.
 ```
 $ termini itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
-## TODO at v0.2
-- [ ] Add preset 'compress' : auto compression(png, pdf, svg... and all supported files) and deploy files.
-- ex) ``` termini compress --allow-extensions=pdf -> only pdf ```
+Example for auto compress downloaded (from browser) svg files
+```
+$ termini svgmin ~/Downloads/ ~/Downloads/
+```
 
-
-## Someday
+## TODO
 - [ ] Process as persistant worker (start, stop, restart)
 - [ ] Support remote env (capistrano+git integration??)
+- [ ] Add preset 'compress' : auto compression(png, pdf, svg... and all supported files) and deploy files.
+- ex) ``` termini compress --allow-extensions=pdf -> only pdf ```
