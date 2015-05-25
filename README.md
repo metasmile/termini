@@ -13,10 +13,11 @@ Clean your broken or dead tracks perfectly.
 $ clean_itunes
 ```
 
-watchmv 
+termini 
 ======
+![termini] (https://www.evernote.com/l/AEHmUXk_0EpHWrmggwLV8K5ro1H61IcT_VYB/image.png "termini")
 
-Watching file and moving to specific DIR concurrently. Simple and Useful when you forward only specific file format or mime types.
+A smart, fast and easy file hub (or watcher). When you define several actions after watching via specific format or mime types, very useful.
 
 - v0.1
 - Requirements: nodejs, and several modules from npm
@@ -28,20 +29,20 @@ Watching file and moving to specific DIR concurrently. Simple and Useful when yo
 - Supported concurrent file operation.
 
 ```
-Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]
+Usage: termini [options]... [preset] [PATH SRC] [PATH DEST]
 
 # Auto-import music files:
- > watchmv itunes [PATH SRC] [PATH to itunes music library]
+ > termini itunes [PATH SRC] [PATH to itunes music library]
 # Restrict by mimetypes or extenstions:
- > watchmv --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]
+ > termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]
  ```
 Example for forward music files to itunes.
 ```
-$ watchmv itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
+$ termini itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
 ## TODO at v0.2
 - [ ] Add preset 'compress' : auto compression(png, pdf, svg... and all supported files) and deploy files.
-- ex) ``` watchmv compress --allow-extensions=pdf -> only pdf ```
+- ex) ``` termini compress --allow-extensions=pdf -> only pdf ```
 
 
 ## Someday
