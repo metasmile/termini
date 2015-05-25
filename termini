@@ -30,6 +30,7 @@ if(params.length<2){
 
 var PATH_TARGET = params.length==3 ? params[1] :params[0];
 var PATH_TO = params.slice(-1)[0];
+var IS_PATH_TO_SELF = is_in_same_dir(PATH_TARGET, PATH_TO);
 
 //init presets
 var preset = params.length==3 ? params[0] : 'notdefined';
@@ -99,14 +100,6 @@ watcher.on('all', function(e,f) {
 /*
 	[File Move]
 */
-function move_fd(f){
-	try{
-		fs.copySync(f, get_dest_f(f, PATH_TO));
-		setTimeout(function(){
-			fs.removeSync(f);
-		},500);
-	}catch(e){}
-}
 
 //queue
 q.on('success', function(result, job) {
@@ -124,9 +117,15 @@ function add_job_move_f(target_f, dest_f) {
 
     if (q.length == 0) {
         q.push(__op);
-        q.start(function(err) {
-			wait_remove_all(target_f);
-        });
+
+		if(IS_PATH_TO_SELF){
+			q.start();
+
+		}else{
+			q.start(function(err) {
+				wait_remove_all(target_f);
+	        });
+		}
     }else{
         q.push(__op);
     }
