@@ -20,7 +20,9 @@ termini
 A smart, fast and easy file hub (or watcher). When you define several actions after watching via specific format or mime types, very useful.
 
 - v0.2
-- Requirements: nodejs, and several modules from npm
+- Requirements
+ - nodejs **(v0.12.0 or higher recommended)** 
+ - npm install [svgo](https://github.com/svg/svgo), and several modules via error messages! when you run
 - Main Philosophy 
  - very very easy to watch files(minus zero config) 
  - when detect any file/dir -> any action through pipeline
