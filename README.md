@@ -44,7 +44,7 @@ Example for forward music files to itunes.
 ```
 $ termini itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
-Example for auto compress downloaded (from browser) svg files
+Example for auto compress downloaded (from browser) svg files and **overwrite**
 ```
 $ termini svgmin ~/Downloads/ ~/Downloads/
 ```
