@@ -1,5 +1,7 @@
 #!/usr/local/bin/node
 
+//Requirements : nodejs v0.12.0 or higher
+
 //config
 var log = console.log.bind(console);
 var fs = require('fs-extra');
@@ -10,8 +12,9 @@ var path = require('path');
 var args = require('minimist')(process.argv.slice(2));
 var params = args._;
 var queue = require('queue');
-require('shelljs/global');
 var mv = require('mv');
+var glob = require("glob");
+var sh = require('child_process');
 
 //resolve args
 if(args['h']){
@@ -27,9 +30,8 @@ if(params.length<2){
 	process.exit(1);
 }
 
-
-var PATH_TARGET = params.length==3 ? params[1] :params[0];
-var PATH_TO = params.slice(-1)[0];
+var PATH_TARGET = path.resolve(params.length==3 ? params[1] :params[0]);
+var PATH_TO = path.resolve(params.slice(-1)[0]);
 var IS_PATH_TO_SELF = is_in_same_dir(PATH_TARGET, PATH_TO);
 
 //init presets
@@ -39,6 +41,10 @@ var preset_values = ({
 		// itunes supported types : mp3, aiff, wav, mp4, aac, m4a
 		ext:['.mp3', '.aiff', '.wav', '.mp4', '.aac', '.m4a'],
 		mime:['audio/aac', 'audio/mp4', 'audio/mpeg', 'audio/mp4a-latm', 'audio/x-wav', 'audio/x-aiff']
+	},
+	svgmin : {
+		ext:['.svg'],
+		mime:['image/svg+xml']
 	}
 })[preset];
 
@@ -55,15 +61,18 @@ var allowed_mimes = mimes_by_option && mimes_by_preset ? mimes_by_option.concat(
 
 //init lists
 var files_roots = {};
+var files_working = {};
 
 //queue config
 var q = queue({timeout:3000, concurrency:true});
 var wait_removal = 10 * 1000;
+var wait_file_rewatch = 1000;
 
 //watch
 var watcher = cho.watch(PATH_TARGET, {
   persistent: true,
   recursive: true,
+  ignored:IS_PATH_TO_SELF ? mkpatt(PATH_TARGET,['tmp','DS_Store']) : PATH_TO+'/'+'**',
   ignoreInitial: true,
   usePolling: true,
   alwaysStat: false,
@@ -73,7 +82,7 @@ var watcher = cho.watch(PATH_TARGET, {
 });
 
 watcher.on('all', function(e,f) {
-    var ext = path.extname(f);
+	var ext = path.extname(f);
 	var valid_ext = allowed_exts ? allowed_exts.indexOf(ext.toLowerCase()) > -1 : true;
 
 	var mt = mime.lookup(f);
@@ -89,13 +98,37 @@ watcher.on('all', function(e,f) {
     var copied = valid_format && e=='change';
     var stream_completed = valid_format && e=='add';
 
-	// compress_f(f,get_dest_f(f,PATH_TO));
 	if(added || copied){
-		if(fs.lstatSync(f).size){
-			add_job_move_f(f, get_dest_f(f, PATH_TO));
+		try{
+			if(fs.lstatSync(f).size){
+				if(!files_working[f]){
+					files_working[f] = get_dest_f(f,PATH_TO);
+
+					do_after_watch(f);
+
+					setTimeout(function(e){
+						files_working[f] && (delete files_working[f]);
+					}, wait_file_rewatch);
+				}
+			}
+		}catch(err){
+			log(err);
 		}
 	}
 });
+
+function do_after_watch(f){
+	if(preset=='svgmin'){
+		svgmin_f(f, get_dest_f(f,PATH_TO));
+	}
+	else {
+		add_job_move_f(f, get_dest_f(f, PATH_TO));
+	}
+}
+
+var escapeShell = function(cmd) {
+  return '"'+cmd.replace(/(["\s'$`\\])/g,'\\$1')+'"';
+};
 
 /*
 	[File Move]
@@ -152,8 +185,13 @@ function wait_remove_all(target_f){
 /*
 	[File Compress]
 */
-function compress_f(target_f, dest_f){
-	return exec(['svgo',target_f, dest_f].join(' '));
+function svgmin_f(target_f, dest_f){
+	var temp_f = dest_f+'.tmp';
+	fs.copySync(target_f, temp_f);
+	log('minify-svg',target_f,dest_f);
+	sh.spawnSync('svgo', [temp_f, dest_f]);
+	fs.removeSync(temp_f);
+	// sh.spawnSync('gs', '-sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH'.split(' ').concat(['-sOutputFile='+dest_f, temp_f]));
 }
 
 /*
@@ -173,17 +211,20 @@ function is_in_same_dir(f, d){
 	return !rel || rel=='..';
 }
 
-var glob = require("glob");
+function is_in_child(f,d){
+	var rel = path.relative(path.resolve(d), path.resolve(f));
+	return rel ? (rel.split(path.sep)[0] != "..") : false;
+}
+
+function resolve_ws(f){
+	return f.replace(/ /g,'\\ ');
+}
+
 function get_files_all(dir, exts, mimes){
 	var files = [];
-	var hasExtDef = Array.isArray(exts);
 	var hasMimeDef = Array.isArray(mimes);
-
-	function mkpatt_all(dir_path){
-		return path.resolve(dir_path)+path.sep+'**/*.'+(hasExtDef ? '+('+exts.join('|')+')' : '*');
-	}
 	function rdpath_all(dir_path){
-		glob.sync(mkpatt_all(dir_path)).forEach(function(f){
+		glob.sync(mkpatt(dir_path, exts)).forEach(function(f){
 			var _stat = fs.lstatSync(f);
 			if(_stat.isDirectory()){
 				// rdpath_all(f);
@@ -194,6 +235,11 @@ function get_files_all(dir, exts, mimes){
 	}
 	rdpath_all(dir);
 	return files;
+}
+
+function mkpatt(dir_path, exts){
+	var hasExtDef = Array.isArray(exts);
+	return path.resolve(dir_path)+path.sep+'**/*.'+(hasExtDef ? '+('+exts.join('|')+')' : '*');
 }
 
 log('Start watching...',PATH_TARGET, '->', PATH_TO);
