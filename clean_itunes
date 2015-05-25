@@ -7,32 +7,37 @@ cleanTrackLists()
 function cleanTrackLists(){
 	iTunes = Application('iTunes')
 	delay(.3)
-	
+
 	var cleancount = 0
 	var albums = {}
 	var files = {}
-	iTunes.libraryPlaylists[0].fileTracks().forEach(function(t){
-		if(t.podcast()){
-			return;
-		}
-		
-		//clean by file location
-		var loc = t.location()
-		var cleanByFile = !loc || (loc && files[loc])
+	var targetTracks = iTunes.libraryPlaylists[0].fileTracks();
+	if(targetTracks.length>0){
+		log('Now cleaning...');
+		targetTracks.forEach(function(t){
+			if(t.podcast()){
+				return;
+			}
 
-		//clean byname by same album
-		var an = t.album()
-		var cleanByNameInAlbum = (albums[an] ? albums[an] : (albums[an]={}))[t.name()]
-		
-		if(cleanByFile || cleanByNameInAlbum){
-			iTunes.delete(t)
-			cleancount++
-		}else{
-			files[loc] = t
-			albums[an][t.name()] = t
-		}
-	})
+			//clean by file location
+			var loc = t.location()
+			var cleanByFile = !loc || (loc && files[loc])
+
+			//clean byname by same album
+			var an = t.album()
+			var cleanByNameInAlbum = (albums[an] ? albums[an] : (albums[an]={}))[t.name()]
+
+			if(cleanByFile || cleanByNameInAlbum){
+				iTunes.delete(t)
+				cleancount++
+			}else{
+				files[loc] = t
+				albums[an][t.name()] = t
+			}
+		})
+	}else{
+		log('Not found any songs in your itunes library.');
+	}
+
 	return cleancount
 }
-
-
