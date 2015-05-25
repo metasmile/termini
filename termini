@@ -15,21 +15,21 @@ var mv = require('mv');
 
 //resolve args
 if(args['h']){
-	log('Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]');
+	log('Usage: termini [options]... [preset] [PATH SRC] [PATH DEST]');
 	log('\n')
-	log('# Auto-import music files:\n > watchmv itunes [PATH SRC] [PATH to itunes music library]');
-	log('# Restrict by mimetypes or extenstions:\n > watchmv --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]');
+	log('# Auto-import music files:\n > termini itunes [PATH SRC] [PATH to itunes music library]');
+	log('# Restrict by mimetypes or extenstions:\n > termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]');
 	process.exit(code=0);
 }
 
 if(params.length<2){
-	log('Usage: watchmv [options]... [preset] [PATH SRC] [PATH DEST]');
+	log('Usage: termini [options]... [preset] [PATH SRC] [PATH DEST]');
 	process.exit(1);
 }
 
 
-var dir_target = params.length==3 ? params[1] :params[0];
-var dir_to = params.slice(-1)[0];
+var PATH_TARGET = params.length==3 ? params[1] :params[0];
+var PATH_TO = params.slice(-1)[0];
 
 //init presets
 var preset = params.length==3 ? params[0] : 'notdefined';
@@ -60,7 +60,7 @@ var q = queue({timeout:3000, concurrency:true});
 var wait_removal = 10 * 1000;
 
 //watch
-var watcher = cho.watch(dir_target, {
+var watcher = cho.watch(PATH_TARGET, {
   persistent: true,
   recursive: true,
   ignoreInitial: true,
@@ -88,10 +88,10 @@ watcher.on('all', function(e,f) {
     var copied = valid_format && e=='change';
     var stream_completed = valid_format && e=='add';
 
-	// compress_f(f,get_dest_f(f,dir_to));
+	// compress_f(f,get_dest_f(f,PATH_TO));
 	if(added || copied){
 		if(fs.lstatSync(f).size){
-			add_job_move_f(f, get_dest_f(f, dir_to));
+			add_job_move_f(f, get_dest_f(f, PATH_TO));
 		}
 	}
 });
@@ -101,7 +101,7 @@ watcher.on('all', function(e,f) {
 */
 function move_fd(f){
 	try{
-		fs.copySync(f, get_dest_f(f, dir_to));
+		fs.copySync(f, get_dest_f(f, PATH_TO));
 		setTimeout(function(){
 			fs.removeSync(f);
 		},500);
@@ -116,6 +116,7 @@ q.on('success', function(result, job) {
 function add_job_move_f(target_f, dest_f) {
     var __op = function (cb) {
 		try{
+			log('copy', target_f, '->', dest_f);
 			fs.copySync(target_f, dest_f);
 		}catch(e){}
         cb();
@@ -133,6 +134,7 @@ function add_job_move_f(target_f, dest_f) {
 
 function wait_remove_all(target_f){
     var target_f_root = get_target_root(target_f);
+	//parent dir == PATH_TARGET
 	if(!target_f_root){
 		return;
 	}
@@ -159,12 +161,12 @@ function compress_f(target_f, dest_f){
 	[Utils]
 */
 function get_dest_f(f, dest_dir){
-	return path.join(dest_dir, path.relative(dir_target, f));
+	return path.join(dest_dir, path.relative(PATH_TARGET, f));
 }
 
 function get_target_root(f){
-	var f_root_dir = path.dirname(path.resolve(f)).replace(path.resolve(dir_target),'').split(path.sep)[1];
-    return f_root_dir && !is_in_same_dir(f, dir_target) ? path.join(dir_target, f_root_dir) : null;
+	var f_root_dir = path.dirname(path.resolve(f)).replace(path.resolve(PATH_TARGET),'').split(path.sep)[1];
+    return f_root_dir && !is_in_same_dir(f, PATH_TARGET) ? path.join(PATH_TARGET, f_root_dir) : null;
 }
 
 function is_in_same_dir(f, d){
@@ -195,4 +197,4 @@ function get_files_all(dir, exts, mimes){
 	return files;
 }
 
-log('Start watching...',dir_target, '->', dir_to);
+log('Start watching...',PATH_TARGET, '->', PATH_TO);
