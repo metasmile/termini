@@ -74,10 +74,11 @@ var watcher = cho.watch(PATH_TARGET, {
   recursive: true,
   ignored:IS_PATH_TO_SELF ? mkpatt(PATH_TARGET,['tmp','DS_Store']) : PATH_TO+'/'+'**',
   ignoreInitial: true,
-  usePolling: true,
+  usePolling: false,
   alwaysStat: false,
-  depth: undefined,
+  depth: 3,
   interval: 0,
+  useFsEvents:true,
   atomic: true
 });
 
