@@ -2,15 +2,15 @@
 
 //config
 var log = console.log.bind(console);
-var mkdirp = require('mkdirp');
 var fs = require('fs-extra');
+var mkdirp = require('mkdirp');
 var cho = require('chokidar');
 var mime = require('mime');
 var path = require('path');
 var args = require('minimist')(process.argv.slice(2));
 var params = args._;
 var queue = require('queue');
-var execSync = require("exec-sync");
+require('shelljs/global');
 var mv = require('mv');
 
 //resolve args
@@ -53,7 +53,6 @@ var mimes_by_preset = preset_values && preset_values.mime;
 var allowed_mimes = mimes_by_option && mimes_by_preset ? mimes_by_option.concat(mimes_by_preset) : (mimes_by_option || mimes_by_preset);
 
 //init lists
-var files_hash = {};
 var files_roots = {};
 
 //queue config
@@ -73,7 +72,6 @@ var watcher = cho.watch(dir_target, {
 });
 
 watcher.on('all', function(e,f) {
-
     var ext = path.extname(f);
 	var valid_ext = allowed_exts ? allowed_exts.indexOf(ext.toLowerCase()) > -1 : true;
 
@@ -83,27 +81,32 @@ watcher.on('all', function(e,f) {
 	var valid_format = valid_ext && valid_mime;
 
     var temp_origin_f = path.join(path.dirname(f), path.basename(f).replace(path.extname(f), ''));
-    var temp_streaming = 'application/octet-stream'==mt && allowed_exts.indexOf(path.extname(temp_origin_f))>-1;
+    var temp_streaming = 'application/octet-stream'==mt && allowed_exts ? allowed_exts.indexOf(path.extname(temp_origin_f))>-1 : path.extname(temp_origin_f);
 
-    var copied = valid_format && files_hash[f]=='add' && e=='change';
-    //FIXME: dont't work when stream handled during temp writing.
-    var stream_completed = valid_format && files_hash[f]=='stream_add' && e=='add';
+	var added = valid_format && e=='add';
+	var addedDir = e=='addDir';
+    var copied = valid_format && e=='change';
+    var stream_completed = valid_format && e=='add';
 
-    //start job
-    if(copied || stream_completed){
-        log('deploy start', f);
-
-        // watcher.unwatch(f);
-        setTimeout(function(){
-            delete files_hash[f];
-            add_job_move_f(f, get_dest_f(f, dir_to));
-        }, stream_completed ? 1000 : 0);
-    }
-
-    if(e=='add'){
-        files_hash[temp_streaming ? temp_origin_f : f] = temp_streaming ? "stream_add" : "add";
-    }
+	// compress_f(f,get_dest_f(f,dir_to));
+	if(added || copied){
+		if(fs.lstatSync(f).size){
+			add_job_move_f(f, get_dest_f(f, dir_to));
+		}
+	}
 });
+
+/*
+	[File Move]
+*/
+function move_fd(f){
+	try{
+		fs.copySync(f, get_dest_f(f, dir_to));
+		setTimeout(function(){
+			fs.removeSync(f);
+		},500);
+	}catch(e){}
+}
 
 //queue
 q.on('success', function(result, job) {
@@ -112,41 +115,27 @@ q.on('success', function(result, job) {
 
 function add_job_move_f(target_f, dest_f) {
     var __op = function (cb) {
-        move_f(target_f, dest_f);
+		try{
+			fs.copySync(target_f, dest_f);
+		}catch(e){}
         cb();
     };
 
     if (q.length == 0) {
         q.push(__op);
         q.start(function(err) {
-
-            flush_jobs_all();
+			wait_remove_all(target_f);
         });
     }else{
         q.push(__op);
     }
 }
 
-function flush_jobs_all(){
-    Object.keys(files_hash).forEach(function( k ){
-        var target_f = k;
-        delete files_hash[k];
-        move_f(target_f, get_dest_f(target_f, dir_to) );
-    });
-}
-
-function move_f(target_f, dest_f) {
-    try{
-        fs.copySync(target_f, dest_f);
-
-        wait_remove_all(target_f);
-    }catch(e){
-        log(e);
-    }
-}
-
 function wait_remove_all(target_f){
     var target_f_root = get_target_root(target_f);
+	if(!target_f_root){
+		return;
+	}
 
     var timeoutObj = files_roots[target_f_root];
     timeoutObj && clearTimeout(timeoutObj);
@@ -159,13 +148,51 @@ function wait_remove_all(target_f){
     files_roots[target_f_root] = timeoutObj;
 }
 
+/*
+	[File Compress]
+*/
+function compress_f(target_f, dest_f){
+	return exec(['svgo',target_f, dest_f].join(' '));
+}
+
+/*
+	[Utils]
+*/
 function get_dest_f(f, dest_dir){
-    dest_dir = path.join(dest_dir, path.basename(get_target_root(f)));
-    return path.join(path.join(dest_dir, path.basename(path.dirname( f ))) , path.basename( f ));
+	return path.join(dest_dir, path.relative(dir_target, f));
 }
 
 function get_target_root(f){
-    return path.join(dir_target, path.resolve(f).replace(path.resolve(dir_target),'').split(path.sep)[1]);
+	var f_root_dir = path.dirname(path.resolve(f)).replace(path.resolve(dir_target),'').split(path.sep)[1];
+    return f_root_dir && !is_in_same_dir(f, dir_target) ? path.join(dir_target, f_root_dir) : null;
+}
+
+function is_in_same_dir(f, d){
+	var rel = path.relative(f, d);
+	return !rel || rel=='..';
+}
+
+var glob = require("glob");
+function get_files_all(dir, exts, mimes){
+	var files = [];
+	var hasExtDef = Array.isArray(exts);
+	var hasMimeDef = Array.isArray(mimes);
+
+	function mkpatt_all(dir_path){
+		return path.resolve(dir_path)+path.sep+'**/*.'+(hasExtDef ? '+('+exts.join('|')+')' : '*');
+	}
+	function rdpath_all(dir_path){
+		glob.sync(mkpatt_all(dir_path)).forEach(function(f){
+			var _stat = fs.lstatSync(f);
+			if(_stat.isDirectory()){
+				// rdpath_all(f);
+			}else if(_stat.isFile() && (hasMimeDef ? mimes.indexOf(mime.lookup(f))>-1 : true)){
+				files.push(f);
+			}
+		});
+	}
+	rdpath_all(dir);
+	return files;
 }
 
 log('Start watching...',dir_target, '->', dir_to);
