@@ -33,6 +33,7 @@ if(params.length<2){
 var PATH_TARGET = path.resolve(params.length==3 ? params[1] :params[0]);
 var PATH_TO = path.resolve(params.slice(-1)[0]);
 var IS_PATH_TO_SELF = is_in_same_dir(PATH_TARGET, PATH_TO);
+var IS_PATH_TO_CHILD = is_in_child(PATH_TARGET, PATH_TO);
 
 //init presets
 var preset = params.length==3 ? params[0] : 'notdefined';
@@ -40,17 +41,24 @@ var preset_values = ({
 	itunes : {
 		// itunes supported types : mp3, aiff, wav, mp4, aac, m4a
 		ext:['.mp3', '.aiff', '.wav', '.mp4', '.aac', '.m4a'],
-		mime:['audio/aac', 'audio/mp4', 'audio/mpeg', 'audio/mp4a-latm', 'audio/x-wav', 'audio/x-aiff']
+		mime:['audio/aac', 'audio/mp4', 'audio/mpeg', 'audio/mp4a-latm', 'audio/x-wav', 'audio/x-aiff'],
+		act:function(f){
+			add_job_move_f(f, get_dest_f(f, PATH_TO));
+		}
 	},
 	svgmin : {
 		ext:['.svg'],
-		mime:['image/svg+xml']
+		mime:['image/svg+xml'],
+		act:function(f){
+			svgmin_f(f, get_dest_f(f,PATH_TO));
+		}
 	}
 })[preset];
 
 //resolve mimetype, extension
 var option_exts = args['allow-extensions'];
 var option_mimes = args['allow-mime-types'];
+
 var exts_by_option = option_exts && option_exts.split(',');
 var exts_by_preset = preset_values && preset_values.ext;
 var allowed_exts = exts_by_option && exts_by_preset ? exts_by_option.concat(exts_by_preset) : (exts_by_option || exts_by_preset);
@@ -105,7 +113,7 @@ watcher.on('all', function(e,f) {
 				if(!files_working[f]){
 					files_working[f] = get_dest_f(f,PATH_TO);
 
-					do_after_watch(f);
+						do_after_watch(f);
 
 					setTimeout(function(e){
 						files_working[f] && (delete files_working[f]);
@@ -119,12 +127,7 @@ watcher.on('all', function(e,f) {
 });
 
 function do_after_watch(f){
-	if(preset=='svgmin'){
-		svgmin_f(f, get_dest_f(f,PATH_TO));
-	}
-	else {
-		add_job_move_f(f, get_dest_f(f, PATH_TO));
-	}
+	preset_values && preset_values.act ? preset_values.act(f) : (add_job_move_f(f, get_dest_f(f, PATH_TO)));
 }
 
 var escapeShell = function(cmd) {
@@ -145,7 +148,9 @@ function add_job_move_f(target_f, dest_f) {
 		try{
 			log('copy', target_f, '->', dest_f);
 			fs.copySync(target_f, dest_f);
-		}catch(e){}
+		}catch(e){
+			log(e);
+		}
         cb();
     };
 
@@ -157,7 +162,7 @@ function add_job_move_f(target_f, dest_f) {
 
 		}else{
 			q.start(function(err) {
-				wait_remove_all(target_f);
+				wait_remove_container(target_f);
 	        });
 		}
     }else{
@@ -165,7 +170,7 @@ function add_job_move_f(target_f, dest_f) {
     }
 }
 
-function wait_remove_all(target_f){
+function wait_remove_container(target_f){
     var target_f_root = get_target_root(target_f);
 	//parent dir == PATH_TARGET
 	if(!target_f_root){
@@ -213,7 +218,7 @@ function is_in_same_dir(f, d){
 }
 
 function is_in_child(f,d){
-	var rel = path.relative(path.resolve(d), path.resolve(f));
+	var rel = path.relative(path.resolve(f), path.resolve(d));
 	return rel ? (rel.split(path.sep)[0] != "..") : false;
 }
 
