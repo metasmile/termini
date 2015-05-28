@@ -1,0 +1,3 @@
+[submodule "xcproj"]
+	path = xcproj
+	url = https://github.com/metasmile/xcproj.git
