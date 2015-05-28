@@ -52,5 +52,6 @@ $ termini svgmin ~/Downloads/ ~/Downloads/
 ## TODO
 - [ ] Process as persistant worker (start, stop, restart)
 - [ ] Support remote env (capistrano+git integration??)
+- [ ] Integrate with alfred workflow
 - [ ] Add preset 'compress' : auto compression(png, pdf, svg... and all supported files) and deploy files.
 - ex) ``` termini compress --allow-extensions=pdf -> only pdf ```
