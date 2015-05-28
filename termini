@@ -18,16 +18,11 @@ var sh = require('child_process');
 
 //resolve args
 if(args['h']){
-	log('Usage: termini [options]... [preset] [PATH SRC] [PATH DEST]');
-	log('\n')
-	log('# Auto-import music files:\n > termini itunes [PATH SRC] [PATH to itunes music library]');
-	log('# Restrict by mimetypes or extenstions:\n > termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]');
-	process.exit(code=0);
+	help_with_exit();
 }
 
 if(params.length<2){
-	log('Usage: termini [options]... [preset] [PATH SRC] [PATH DEST]');
-	process.exit(1);
+	help_with_exit();
 }
 
 var PATH_TARGET = path.resolve(params.length==3 ? params[1] :params[0]);
@@ -65,7 +60,7 @@ var preset_values = ({
 				function add_resource_func(from, to){
 					var project_path = findFirstPathToParent(to, ['xcodeproj']);
 					var dest_path = path.dirname(to);
-					
+
 					sh.execFile(termini_path+'/xcproj/xcproj',['--project='+project_path,'put-resource-bundle',from, dest_path], function (error, stdout, stderr) {
 						log('xcproj',from, '->', to, stdout, stderr);
 					});
@@ -157,6 +152,20 @@ watcher.on('all', function(e,f) {
 
 function do_after_watch(f){
 	preset_values && preset_values.act ? preset_values.act(f) : (add_job_move_f(f, get_dest_f(f, PATH_TO)));
+}
+
+function help_with_exit(){
+	log('Usage: termini [options]... [action] [PATH SRC] [PATH DEST]');
+	log('\n');
+	log('[Actions]');
+	log('itunes : detect itunes supported types');
+	log('svgmin : detect and compress(avg. 40%~60%) svg files.');
+	log('xcode-resource : auto-import resource file to xcode project bundle.');
+	log('\n')
+	log('[Examples]');
+	log('Auto-import music files:\n $ termini itunes [PATH SRC] [PATH to itunes music library]')
+	log('Restrict by mimetypes or extenstions:\n $ termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]');
+	process.exit(code=0);
 }
 
 /*
