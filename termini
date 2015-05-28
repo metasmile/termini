@@ -52,8 +52,37 @@ var preset_values = ({
 		act:function(f){
 			svgmin_f(f, get_dest_f(f,PATH_TO));
 		}
+	},
+	'xcode-resource': {
+		ext:['.mp3', '.svg', '.jpg', '.png', '.pdf', '.xib', '.strings', '.plist', '.m', '.mm', '.h', '.swift'],
+		exitwhen: !findFirstPathToParent(PATH_TO, ['xcodeproj']),
+		exitmsg: 'Not found any valid xcode project in working tree.',
+		act: function(f){
+			sh.exec('pwd', function(e,so,se){
+				var termini_path = path.resolve(so.replace(/(\r\n|\n|\r)/gm,""));
+				var dest = get_dest_f(f,PATH_TO);
+
+				function add_resource_func(from, to){
+					var project_path = findFirstPathToParent(to, ['xcodeproj']);
+					var dest_path = path.dirname(to);
+					
+					sh.execFile(termini_path+'/xcproj/xcproj',['--project='+project_path,'put-resource-bundle',from, dest_path], function (error, stdout, stderr) {
+						log('xcproj',from, '->', to, stdout, stderr);
+					});
+				};
+
+				if(path.extname(f).toLowerCase()=='.svg'){
+					svgmin_f(f, dest, function(r){
+						add_resource_func(f, dest);
+					});
+				}else{
+					add_resource_func(f, dest);
+				}
+			});
+		}
 	}
 })[preset];
+
 
 //resolve mimetype, extension
 var option_exts = args['allow-extensions'];
@@ -130,10 +159,6 @@ function do_after_watch(f){
 	preset_values && preset_values.act ? preset_values.act(f) : (add_job_move_f(f, get_dest_f(f, PATH_TO)));
 }
 
-var escapeShell = function(cmd) {
-  return '"'+cmd.replace(/(["\s'$`\\])/g,'\\$1')+'"';
-};
-
 /*
 	[File Move]
 */
@@ -143,11 +168,13 @@ q.on('success', function(result, job) {
 
 });
 
-function add_job_move_f(target_f, dest_f) {
+function add_job_move_f(target_f, dest_f, complete) {
     var __op = function (cb) {
 		try{
 			log('copy', target_f, '->', dest_f);
 			fs.copySync(target_f, dest_f);
+
+			complete && complete(dest_f);
 		}catch(e){
 			log(e);
 		}
@@ -157,14 +184,12 @@ function add_job_move_f(target_f, dest_f) {
     if (q.length == 0) {
         q.push(__op);
 
-		if(IS_PATH_TO_SELF){
-			q.start();
-
-		}else{
-			q.start(function(err) {
+		q.start(function(err) {
+			if(!IS_PATH_TO_SELF){
 				wait_remove_container(target_f);
-	        });
-		}
+			}
+		});
+
     }else{
         q.push(__op);
     }
@@ -191,13 +216,15 @@ function wait_remove_container(target_f){
 /*
 	[File Compress]
 */
-function svgmin_f(target_f, dest_f){
+function svgmin_f(target_f, dest_f, complete){
 	var temp_f = dest_f+'.tmp';
 	fs.copySync(target_f, temp_f);
 	log('minify-svg',target_f,dest_f);
 	sh.spawnSync('svgo', [temp_f, dest_f]);
 	fs.removeSync(temp_f);
 	// sh.spawnSync('gs', '-sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH'.split(' ').concat(['-sOutputFile='+dest_f, temp_f]));
+
+	complete && complete(dest_f);
 }
 
 /*
@@ -226,14 +253,14 @@ function resolve_ws(f){
 	return f.replace(/ /g,'\\ ');
 }
 
-function get_files_all(dir, exts, mimes){
+function get_files_all(dir, exts, mimes, recursive, include_dir){
 	var files = [];
 	var hasMimeDef = Array.isArray(mimes);
 	function rdpath_all(dir_path){
-		glob.sync(mkpatt(dir_path, exts)).forEach(function(f){
+		glob.sync(recursive ? mkpatt(dir_path, exts) : mkpatt_current(dir_path, exts) ).forEach(function(f){
 			var _stat = fs.lstatSync(f);
-			if(_stat.isDirectory()){
-				// rdpath_all(f);
+			if(include_dir && _stat.isDirectory()){
+				files.push(f);
 			}else if(_stat.isFile() && (hasMimeDef ? mimes.indexOf(mime.lookup(f))>-1 : true)){
 				files.push(f);
 			}
@@ -248,4 +275,36 @@ function mkpatt(dir_path, exts){
 	return path.resolve(dir_path)+path.sep+'**/*.'+(hasExtDef ? '+('+exts.join('|')+')' : '*');
 }
 
+function mkpatt_current(dir_path, exts){
+	var hasExtDef = Array.isArray(exts);
+	return path.resolve(dir_path)+path.sep+'*.'+(hasExtDef ? '+('+exts.join('|')+')' : '*');
+}
+
+function escapeShell(cmd) {
+  return '"'+cmd.replace(/(["\s'$`\\])/g,'\\$1')+'"';
+};
+
+function findFirstPathToParent(startDir, exts){
+	var currentDir = startDir;
+	var currentFile = null;
+
+	function nextToParent(){
+		var files = get_files_all(currentDir, exts, null, false, true);
+		if(files.length){
+			return files[0];
+		}else{
+			currentDir = path.resolve(currentDir, '..');
+			return currentDir==path.sep ? null : nextToParent();
+		}
+	}
+	return nextToParent();
+}
+
+// check valid condition by presets
+if(preset_values && preset_values.exitwhen){
+	log('Error: ', preset_values.exitmsg || 'exit with defined condition.');
+	process.exit(1);
+}
+
+// start.
 log('Start watching...',PATH_TARGET, '->', PATH_TO);
