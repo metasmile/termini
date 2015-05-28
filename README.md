@@ -1,4 +1,4 @@
-# scripts_for_macos
+# scripts for MacOS
 Several small scripts and workflows for mac os automation.
 
 clean_itunes
