@@ -1,3 +1,6 @@
 [submodule "xcproj"]
 	path = xcproj
 	url = https://github.com/metasmile/xcproj.git
+[submodule "scripts-osx"]
+	path = scripts-osx
+	url = https://github.com/metasmile/scripts-osx.git
