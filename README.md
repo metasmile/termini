@@ -33,13 +33,17 @@ Auto-import music files:
 Restrict by mimetypes or extenstions:
  $ termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]
  ```
-Example for forward music files to itunes.
+Forward music files to itunes.
 ```
 $ termini itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
-Example for auto compress downloaded (from browser) svg files and **overwrite**
+Auto compress downloaded (from browser) svg files and **overwrite**
 ```
 $ termini svgmin ~/Downloads/ ~/Downloads/
+```
+Auto import detected image files to xcode project bundle.
+```
+$ termini xcode-resource ~/Designworking_temp/ ~/Documents/myxcodeproj/Resources/images/
 ```
 
 ## TODO
