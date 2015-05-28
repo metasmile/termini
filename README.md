@@ -21,18 +21,29 @@ A smart, fast and easy file hub (or watcher). When you define several actions af
 ```
 Usage: termini [options]... [action] [PATH SRC] [PATH DEST]
 
-# Auto-import music files:
- > termini itunes [PATH SRC] [PATH to itunes music library]
-# Restrict by mimetypes or extenstions:
- > termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]
+[Actions]
+itunes : detect itunes supported types
+svgmin : detect and compress(avg. 40%~60%) svg files.
+xcode-resource : auto-import resource file to xcode project bundle.
+
+
+[Examples]
+Auto-import music files:
+ $ termini itunes [PATH SRC] [PATH to itunes music library]
+Restrict by mimetypes or extenstions:
+ $ termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]
  ```
-Example for forward music files to itunes.
+Forward music files to itunes.
 ```
 $ termini itunes ~/Downloads/ ~/Music/iTunes/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 ```
-Example for auto compress downloaded (from browser) svg files and **overwrite**
+Auto compress downloaded (from browser) svg files and **overwrite**
 ```
 $ termini svgmin ~/Downloads/ ~/Downloads/
+```
+Auto import detected image files to xcode project bundle.
+```
+$ termini xcode-resource ~/Designworking_temp/ ~/Documents/myxcodeproj/Resources/images/
 ```
 
 ## TODO
