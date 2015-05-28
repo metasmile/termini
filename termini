@@ -98,7 +98,7 @@ var files_working = {};
 //queue config
 var q = queue({timeout:3000, concurrency:true});
 var wait_removal = 10 * 1000;
-var wait_file_rewatch = 1000;
+var wait_file_rewatch = 10 * 1000;
 
 //watch
 var watcher = cho.watch(PATH_TARGET, {
