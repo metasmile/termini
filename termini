@@ -22,11 +22,12 @@ if(args['h']){
 }
 
 if(params.length<2){
+	log('Wrong parameter. Please see below.\n')
 	help_with_exit();
 }
 
-var PATH_TARGET = path.resolve(params.length==3 ? params[1] :params[0]);
-var PATH_TO = path.resolve(params.slice(-1)[0]);
+var PATH_TARGET = resolveEnvPath( params.length==3 ? params[1] : params[0] );
+var PATH_TO = resolveEnvPath( params.slice(-1)[0] );
 var IS_PATH_TO_SELF = is_in_same_dir(PATH_TARGET, PATH_TO);
 var IS_PATH_TO_CHILD = is_in_child(PATH_TARGET, PATH_TO);
 
@@ -307,6 +308,13 @@ function findFirstPathToParent(startDir, exts){
 		}
 	}
 	return nextToParent();
+}
+
+function resolveEnvPath(str) {
+    if (path.normalize(str).substr(0, 2) === '~/') {
+        str = (process.env.HOME || process.env.HOMEPATH || process.env.HOMEDIR || process.cwd()) + str.substr(1);
+    }
+    return path.resolve(str);
 }
 
 // check valid condition by presets
