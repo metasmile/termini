@@ -2,7 +2,7 @@ termini
 ======
 ![termini] (https://www.evernote.com/l/AEHmUXk_0EpHWrmggwLV8K5ro1H61IcT_VYB/image.png "termini")
 
-A smart, fast and easy file hub (or watcher). When you define several actions after watching via specific format or mime types, very useful.
+A smart, fast and easy file hub (or watcher). You can define several useful actions after watching via specific format or mime types.
 
 - v0.3
 - Requirements
@@ -43,7 +43,7 @@ $ termini svgmin ~/Downloads/ ~/Downloads/
 ```
 Auto import detected image files to xcode project bundle.
 ```
-$ termini xcode-resource ~/Designworking_temp/ ~/Documents/myxcodeproj/Resources/images/
+$ termini xcode-resource --allow-extensions=png,mp3,jpg,svg ~/Designworking_temp/ ~/Documents/myxcodeproj/Resources/images/
 ```
 
 ## TODO
