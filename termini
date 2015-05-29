@@ -166,6 +166,7 @@ function help_with_exit(){
 	log('[Examples]');
 	log('Auto-import music files:\n $ termini itunes [PATH SRC] [PATH to itunes music library]')
 	log('Restrict by mimetypes or extenstions:\n $ termini --allow-mime-types=audio/mpeg,video/mp4 --allow-extensions=mp3,jpg,gif,mp4 [PATH SRC] [PATH DEST]');
+	log('Auto-import image file to xcode resource bundle:\n $ termini xcode-resource --allow-extensions=png,mp3,jpg,svg [Image file path] [Your image dir path in the xcode project]');
 	process.exit(code=0);
 }
 
