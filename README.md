@@ -13,7 +13,7 @@ For your real life.
 ### Github has plenty numbers of file watcher, but why I made
 - I wanted a easiest file watcher **based on only pre-defined actions for my real code-writer life**. It should make anti-versatile usability.
 - I wanted to transfer various frequently used file that are downloaded from the browser to the path that I have set.
-- Get out pattern character and glob. I just wanted to use mimetypes or extenstion only.
+- I just wanted to use mimetypes or extenstion only. Get out pattern character and glob.
 - And I wanted a **fast copier** that is support concurrent file operation.
 
 ### Usage
