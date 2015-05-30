@@ -10,11 +10,11 @@ For your real life.
  - nodejs **(v0.12.0 or higher recommended)** 
  - npm install [svgo](https://github.com/svg/svgo), and several modules via error messages! when you run
 
-### Why I made
-- I wanted a easiest file watcher **based on only my real code-writer life**. It should make anti-versatile usability.
-- I wanted to transfer various files that are downloaded from the browser to the path that I have set. 
-- Naturally, it should have **filters by mimetypes or extenstion**.
-- I wanted a **fast copier** that is support concurrent file operation.
+### Github has plenty numbers of file watcher, but why I made
+- I wanted a easiest file watcher **based on only pre-defined actions for my real code-writer life**. It should make anti-versatile usability.
+- I wanted to transfer various frequently used file that are downloaded from the browser to the path that I have set.
+- Get out pattern character and glob. I just wanted to use mimetypes or extenstion only.
+- And I wanted a **fast copier** that is support concurrent file operation.
 
 ### Usage
 ```
