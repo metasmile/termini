@@ -12,7 +12,7 @@ For your real life.
 
 ### WWhhy I made
 - Github already has plenty numbers of file watcher, but they are just "command". Not real meaning "utility" or "tool".
-- I wanted a easiest file watcher **based on only frequently using pre-defined actions for my real dev life**. It should make anti-versatile usability.
+- I wanted a easiest file watcher **based on only frequently using pre-defined actions for my real dev life**. It should aim for anti-versatile usability.
 - I wanted to minify svg files when they are add, and automatically import them to my xcode project.
 - I just wanted to quickly use mimetypes or extenstion, filename only. That's all. 
 - And I wanted a **fast copier** that is support concurrent file operation.
