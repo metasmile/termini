@@ -19,6 +19,16 @@ For your real life.
 ### Usage
 ```
 $ termini [options]... [action] [SRC FILE PATH] [DEST DIR PATH]
+
+Actions:
+  itunes           detect itunes supported files
+  svgmin           detect and compress(avg. 40%~60%) svg files.
+  xcode-resource   Automatically import resource file to xcode project bundle.
+... to be continued.
+
+Options:
+  --allow-mime-types(=image/jpeg,image/png[...])   filtering by mime-type
+  --allow-extensions(=mp3,jpg[...])                filtering by extensition  
  ```
 Forward music files to itunes libray.
 ```
@@ -31,14 +41,7 @@ $ termini svgmin ~/Downloads/ ~/Downloads/
 Import detected resouce files to xcode project bundle.
 ```
 $ termini xcode-resource --allow-extensions=png,mp3,jpg,svg ~/Designworking_temp/ ~/Documents/myxcodeproj/Resources/images/
-```
-
-### Actions
-itunes | detect itunes supported files
-svgmin | detect and compress(avg. 40%~60%) svg files.
-xcode-resource | Automatically import resource file to xcode project bundle.
-
-... to be continued.
+``` 
 
 ## I will do
 - Support install dependency, packaging and deploy npm and homebrew etc..
