@@ -2,7 +2,7 @@ termini
 ======
 ![termini] (https://www.evernote.com/l/AEHmUXk_0EpHWrmggwLV8K5ro1H61IcT_VYB/image.png "termini")
 
-A easy, smart utility to watch files/directories and perform an various, useful action when they change. And you can define specific format or mime types without typing patterns and globs.
+A easy, smart tool(or container) to watch files/directories and perform an various, useful pre-defined action when they change. And you can simply define only format or mime type, file name without typing patterns and globs.
 
 For your real life.
 
@@ -11,10 +11,10 @@ For your real life.
  - npm install [svgo](https://github.com/svg/svgo), and several modules via error messages! when you run
 
 ### WWhhy I made
-- Github already has plenty numbers of file watcher, but they are just command. Not real meaning "utility".
-- I wanted a easiest file watcher **based on only pre-defined actions for my real code-writer life**. It should make anti-versatile usability.
-- I wanted to transfer various frequently used file that are downloaded from the browser to the path that I have set.
-- I just wanted to use mimetypes or extenstion only. Get out pattern character and glob.
+- Github already has plenty numbers of file watcher, but they are just "command". Not real meaning "utility" or "tool".
+- I wanted a easiest file watcher **based on only frequently using pre-defined actions for my real dev life**. It should make anti-versatile usability.
+- I just wanted to transfer file that are downloaded from the browser to the path that I have set.
+- I just wanted to quickly use mimetypes or extenstion, filename only. That's all.
 - And I wanted a **fast copier** that is support concurrent file operation.
 
 ### Usage
