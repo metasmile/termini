@@ -2,7 +2,7 @@ termini
 ======
 ![termini] (https://www.evernote.com/l/AEHmUXk_0EpHWrmggwLV8K5ro1H61IcT_VYB/image.png "termini")
 
-A easy, smart utility to watch files/directories and perform an various, useful action when they change. And you can define specific format or mime types.
+A easy, smart utility to watch files/directories and perform an various, useful action when they change. And you can define specific format or mime types without typing patterns and globs.
 
 For your real life.
 
