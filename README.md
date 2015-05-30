@@ -10,7 +10,8 @@ For your real life.
  - nodejs **(v0.12.0 or higher recommended)** 
  - npm install [svgo](https://github.com/svg/svgo), and several modules via error messages! when you run
 
-### Github already has plenty numbers of file watcher, but why I made
+### WWhhy I made
+- Github already has plenty numbers of file watcher, but they are just command. Not real meaning "utility".
 - I wanted a easiest file watcher **based on only pre-defined actions for my real code-writer life**. It should make anti-versatile usability.
 - I wanted to transfer various frequently used file that are downloaded from the browser to the path that I have set.
 - I just wanted to use mimetypes or extenstion only. Get out pattern character and glob.
