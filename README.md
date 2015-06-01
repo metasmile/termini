@@ -48,8 +48,9 @@ $ termini xcode-resource --allow-extensions=png,mp3,jpg,svg ~/Designworking_temp
 - Support install dependency, packaging and deploy npm and homebrew etc..
 - Support built-in persistant process manager(start, stop, restart)
 - Support remote env (capistrano+git integration??)
+- Integrate with slack and webhooks.
 - Integrate with alfred workflow
-- Add action 'torrent' : Automatically download file and then deliver.
-- Add action 'compress' : Automatically compress(png, pdf, svg... and all supported files) and deploy all supported files.
+- Add a action 'torrent' : Automatically download file and then deliver.
+- Add a action 'compress' : Automatically compress(png, pdf, svg... and all supported files) and deploy all supported files.
 - ex) ``` termini compress --allow-extensions=pdf -> only pdf ```
 - ... ITFA, someday I'll write to support ```$ termini install ACTION```
