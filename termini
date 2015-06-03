@@ -132,22 +132,22 @@ watcher.on('all', function(e,f) {
 	var actwhendefined = Array.isArray(actwhen) && actwhen.length;
 	var allowedwork = actwhendefined ? (actwhen.indexOf(e)>-1 && valid_format) : (added || changed);
 
-	if(allowedwork){
-		try{
-			if(fs.lstatSync(f).size){
-				if(!files_working[f]){
-					files_working[f] = get_dest_f(f,PATH_TO);
+	if(!allowedwork){
+		return;
+	}
 
-						do_after_watch(f);
+	try{
+		if(fs.lstatSync(f).size && !files_working[f]){
+			files_working[f] = get_dest_f(f,PATH_TO);
 
-					setTimeout(function(e){
-						files_working[f] && (delete files_working[f]);
-					}, wait_file_rewatch);
-				}
-			}
-		}catch(err){
-			log(err);
+				do_after_watch(f);
+
+			setTimeout(function(e){
+				files_working[f] && (delete files_working[f]);
+			}, wait_file_rewatch);
 		}
+	}catch(err){
+		log(err);
 	}
 });
 
