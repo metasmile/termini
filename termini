@@ -52,6 +52,7 @@ var preset_values = ({
 		ext:['.mp3', '.svg', '.jpg', '.png', '.pdf', '.xib', '.strings', '.plist', '.m', '.mm', '.h', '.swift'],
 		exitwhen: !findFirstPathToParent(PATH_TO, ['xcodeproj']),
 		exitmsg: 'Not found any valid xcode project in working tree.',
+		actwhen:['add'],
 		act: function(f){
 			var dest = get_dest_f(f,PATH_TO);
 			function add_resource_func(from, to){
@@ -124,10 +125,14 @@ watcher.on('all', function(e,f) {
 
 	var added = valid_format && e=='add';
 	var addedDir = e=='addDir';
-    var copied = valid_format && e=='change';
+    var changed = valid_format && e=='change';
     var stream_completed = valid_format && e=='add';
 
-	if(added || copied){
+	var actwhen = preset_values.actwhen;
+	var actwhendefined = Array.isArray(actwhen) && actwhen.length;
+	var allowedwork = actwhendefined ? (actwhen.indexOf(e)>-1 && valid_format) : (added || changed);
+
+	if(allowedwork){
 		try{
 			if(fs.lstatSync(f).size){
 				if(!files_working[f]){
