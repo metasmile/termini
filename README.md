@@ -5,6 +5,7 @@ xcpd
 ======
 - v0.0.1
 
+A git script for deploying Xcode project.<br/>
 Automatically increment build number and push to specific branch without currently working content.<br/>
 Safe from conflict or loss.
 
