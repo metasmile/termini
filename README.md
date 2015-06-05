@@ -48,6 +48,7 @@ $ termini xcode-resource --allow-extensions=png,mp3,jpg,svg ~/Designworking_temp
 - Support install dependency, packaging and deploy npm and homebrew etc..
 - Support built-in persistant process manager(start, stop, restart)
 - Support remote env (capistrano+git integration??)
+- Support a option for 'reverse action' what it can handle 1way or 2way synchronization.
 - Integrate with slack and webhooks.
 - Integrate with alfred workflow
 - Add a action 'torrent' : Automatically download file and then deliver.
