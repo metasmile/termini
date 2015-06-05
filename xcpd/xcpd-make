@@ -1,0 +1,6 @@
+#!/bin/bash
+TARGET_DIR=$(dirname $0)
+
+cat $TARGET_DIR/xcpd-shared > $TARGET_DIR/xcpd \
+&& cat $TARGET_DIR/xcpd-begin >> $TARGET_DIR/xcpd \
+&& cat $TARGET_DIR/xcpd-end >> $TARGET_DIR/xcpd
