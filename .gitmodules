@@ -1,8 +1,0 @@
-[submodule "xcproj"]
-	path = xcproj
-	url = https://github.com/metasmile/xcproj.git
-	ignore = dirty
-[submodule "scripts"]
-	path = scripts
-	url = https://github.com/metasmile/scripts.git
-	ignore = dirty
