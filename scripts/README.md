@@ -1,4 +1,4 @@
-# scripts for MacOS
+# scripts
 Several small scripts and workflows(for mac os automation).
 
 xcpd
