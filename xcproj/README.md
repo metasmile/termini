@@ -58,7 +58,7 @@ Actions:
  * add-resources-bundle <bundle_path>
      Add a bundle to the project and in the `Copy Bundle Resources` build phase
 
- * put-resource-bundle <source_file_absolute_path_to_read> [<dest_dir_path> (default=Resources, relative or absolute)>]
+ * put-resource-bundle <source_absolute_path_to_read> [<dest_dir_path> (default=Resources, relative or absolute)>]
      Copy or rewrite a file, and then Add a bundle to target path in the project and in the `Copy Bundle Resources` build phase
 
  * touch
