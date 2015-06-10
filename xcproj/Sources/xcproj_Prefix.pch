@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'xcproj' target in the 'xcproj' project.
+//
+
+#ifdef __OBJC__
+	#import <AppKit/AppKit.h>
+	#import <Foundation/Foundation.h>
+#endif
