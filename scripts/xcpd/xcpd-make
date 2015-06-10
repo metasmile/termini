@@ -1,7 +1,0 @@
-#!/bin/bash
-PATT_RM='sed -E s/(^#\!\/bin\/bash|^source.+$)//g'
-TARGET_DIR=$(dirname $0)
-
-cat $TARGET_DIR/xcpd-shared | $PATT_RM > $TARGET_DIR/xcpd \
-&& cat $TARGET_DIR/xcpd-begin | $PATT_RM >> $TARGET_DIR/xcpd \
-&& cat $TARGET_DIR/xcpd-end | $PATT_RM >> $TARGET_DIR/xcpd
