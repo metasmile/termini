@@ -1,0 +1,2 @@
+#!/bin/bash
+find . -type f -iname '*.wav' | while read FILE; do FILENAME="${FILE%.*}"; afconvert -f AIFC -d ima4 "$FILE"; echo "$FILE"; done
