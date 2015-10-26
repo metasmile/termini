@@ -51,3 +51,17 @@ A variety of resource file reprocessors that optimized for working with xcode. P
 ###### gss
 - compress pdf files.
 - using [gs](http://www.ghostscript.com/)
+
+### shs
+
+shell scripts
+
+###### rename_all.sh
+
+Recursive replace of directory and file names in the current directory. (excluding '.git')
+
+```
+$ rename_all.sh foo bar
+
+/path/to/file_fooname.txt -> /path/to/file_barname.txt
+```
