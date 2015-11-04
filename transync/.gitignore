@@ -1,5 +1,0 @@
-*.pyc
-lc_ms.cached.tsv
-build/
-*.egg-info/
-dist/
