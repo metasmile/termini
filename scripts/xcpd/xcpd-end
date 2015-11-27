@@ -15,11 +15,15 @@ fi
 
 echo "============ NOW DEPLOY TO ORIGIN : Build $BUILD_NUM ============"
 
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
 # push to origin
 git add -u
 git commit -m "[Build $BUILD_NUM - Beta]"
-git push -f origin develop:release-beta
-git push origin develop
+$(git tag beta/b"$BUILD_NUM")
+git push -f origin "$CURRENT_BRANCH":release-beta
+git push origin $CURRENT_BRANCH
+$(git push origin beta/b"$BUILD_NUM")
 
 # undo stash
 STASHED_ID=$(get_tmp_stash_id)
