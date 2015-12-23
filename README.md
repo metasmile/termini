@@ -52,6 +52,10 @@ A variety of resource file reprocessors that optimized for working with xcode. P
 - compress pdf files.
 - using [gs](http://www.ghostscript.com/)
 
+###### appv
+- rescale mp4 video files via provided sizes. (especially, it is helpful when needed to force the correct size in pixels.)
+- using ffmpeg.
+
 ### shs
 
 shell scripts

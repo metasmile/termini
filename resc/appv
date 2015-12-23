@@ -1,0 +1,2 @@
+#!/bin/bash
+ffmpeg -i $1 -acodec copy -crf 12 -vf scale=$3:$4,setsar=1:1 $2
