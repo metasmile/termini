@@ -1,71 +1,131 @@
-# scripts
-Several small scripts and workflows(for mac os automation).
+![logo](https://github.com/metasmile/ai2app/blob/master/logo.png)
 
-### xcpd
-- v0.0.1
 
-A git script for deploying Xcode project.<br/>
-Automatically increment build number and push to specific branch without currently working content.<br/>
-Safe from conflict or loss.
+# Creating AppIcon sets from Adobe Illustrator
+
+All scripts of this repo is improved from original repo https://github.com/CaryChamplin/CreatingIconsFromAI.
+It just generate a completely valid 'AppIcon.appiconset'.
+
+## Usage
+Clone(or download) this repo to
+```
+/Applications/Adobe Illustrator CC/Presets.localized/en_US/Scripts/ (in my case)
+```
+And click below menus.
 
 ```
-~/YOUR_PROJECT$ xcpd
+File > Scripts > ios-icon-exporter
+File > Scripts > mac-icon-exporter
 ```
 
-If throw any error, simply just do below.
+If you need more information, see this : http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/pdf/illustrator/scripting/CC/Illustrator%20Scripting%20Guide.pdf
+
+## Output results
+
+### AppIcon.appiconset
 ```
-~/YOUR_PROJECT$ git stash pop
+Contents.json
+ipad-29.png
+ipad-29@2x.png
+ipad-40.png
+ipad-40@2x.png
+ipad-76.png
+ipad-76@2x.png
+ipad-83.5@2x.png
+iphone-29@2x.png
+iphone-29@3x.png
+iphone-40@2x.png
+iphone-40@3x.png
+iphone-60@2x.png
+iphone-60@3x.png
 ```
 
-### clean_itunes
-- v1.0
-- Requirements: Yosemite(for use JXA)
-
-
-Clean your broken or dead tracks perfectly.
-
-```
-$ clean_itunes
-```
-
-### resc
-A variety of resource file reprocessors that optimized for working with xcode. Performs to all files in sub directories.
-
-###### aifc
-- convert wav to aifc (IMA4/ADPCM)
-- **Recommended when playing Loop, short or fast, and multiple sounds simultaneously.**
-
-###### caf
-- convert wav to caf (AAC/ABR/128000)
-- **Recommended when playing almost all local(non-streaming) sounds. BUT Only a single instance can play on the device at a time.**
-- refer via apple's technical document : [Bit Rate Control Modes for AAC Encoding](https://developer.apple.com/library/ios/technotes/tn2271/_index.html)
-
-###### flacmp3
-- convert flac to mp3
-- using [flac](http://xiph.org/flac/)
-
-###### svgc
-- minify svg files.
-- using [svgo](https://github.com/svg/svgo)
-
-###### gss
-- compress pdf files.
-- using [gs](http://www.ghostscript.com/)
-
-###### appv
-- rescale mp4 video files via provided sizes. (especially, it is helpful when needed to force the correct size in pixels.)
-- using ffmpeg.
-
-### shs
-
-shell scripts
-
-###### rename_all.sh
-
-Recursive replace of directory and file names in the current directory. (excluding '.git')
-
-```
-$ rename_all.sh foo bar
-
-/path/to/file_fooname.txt -> /path/to/file_barname.txt
+### Content.json
+```json
+{
+  "images" : [
+    {
+      "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "iphone-29@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "iphone-29@3x.png",
+      "scale" : "3x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "iphone",
+      "filename" : "iphone-40@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "iphone",
+      "filename" : "iphone-40@3x.png",
+      "scale" : "3x"
+    },
+    {
+      "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "iphone-60@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "iphone-60@3x.png",
+      "scale" : "3x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "ipad-29.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "ipad-29@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "ipad-40.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "ipad-40@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "76x76",
+      "idiom" : "ipad",
+      "filename" : "ipad-76.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "76x76",
+      "idiom" : "ipad",
+      "filename" : "ipad-76@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "83.5x83.5",
+      "idiom" : "ipad",
+      "filename" : "ipad-83.5@2x.png",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  }
+}
 ```
