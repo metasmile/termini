@@ -1,2 +1,0 @@
-#!/bin/bash
-find . -type f -iname '*.flac' | while read FILE; do FILENAME="${FILE%.*}"; flac -cd "$FILE" | lame -b 192 - "${FILENAME}.mp3"; done

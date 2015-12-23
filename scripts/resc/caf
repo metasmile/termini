@@ -1,2 +1,0 @@
-#!/bin/bash
-find . -type f -iname '*.wav' | while read FILE; do FILENAME="${FILE%.*}"; afconvert -f caff -d aac -s 1 -b 128000 "$FILE"; echo "$FILE"; done

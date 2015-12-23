@@ -1,2 +1,0 @@
-#!/bin/bash
-find . -type f -iname '*.svg' | while read FILE; do FILENAME="${FILE%.*}"; svgo -i "$FILE" ; done
