@@ -24,12 +24,12 @@ def rget(dictionary, key):
 def main():
     parser = argparse.ArgumentParser(description='Automatically translate and synchronize .strings files from defined base language.')
     parser.add_argument('-b','--base-lang-name', help='A base(or source) localizable resource name.(default=\'Base\'), (e.g. "Base" via \'Base.lproj\', "en" via \'en.lproj\')', default='Base', required=False)
-    parser.add_argument('-x','--excluding-lang-names', type=str, help='A localizable resource name that you want to exclude. (e.g. "Base" via \'Base.lproj\', "en" via \'en.lproj\')', required=False, nargs='+')
+    parser.add_argument('-x','--excluding-lang-names', type=str, help='A localizable resource name that you want to exclude. (e.g. "Base" via \'Base.lproj\', "en" via \'en.lproj\')', default=[], required=False, nargs='+')
     parser.add_argument('-c','--client-id', help='Client ID for MS Translation API', required=True)
     parser.add_argument('-s','--client-secret', help='Client Secret key for MS Translation API', required=True)
-    parser.add_argument('-f','--force-translate-keys', type=str, help='Keys in the strings to update and translate by force.', required=False, nargs='+')
-    parser.add_argument('-fb','--following-base-keys', type=str, help='Keys in the strings to follow from "Base".', required=False, nargs='+')
-    parser.add_argument('target path', help='Target localizable resource path. (root path of Base.lproj, default=./)', default='.', nargs='?')
+    parser.add_argument('-f','--force-translate-keys', type=str, help='Keys in the strings to update and translate by force. (input nothing for all keys.)', default=[], required=False, nargs='*')
+    parser.add_argument('-fb','--following-base-keys', type=str, help='Keys in the strings to follow from "Base".', default=[], required=False, nargs='+')
+    parser.add_argument('target path', help='Target localizable resource path. (root path of Base.lproj, default=./)', default='./', nargs='?')
     args = vars(parser.parse_args())
 
     reload(sys)
@@ -41,9 +41,10 @@ def main():
     __FILE_SUFFIX__ = ".strings"
     __RESOURCE_PATH__ = expanduser(args['target path'])
     __BASE_LANG__ = args['base_lang_name']
-    __EXCLUDING_LANGS__ = args['excluding_lang_names'] or []
-    __KEYS_FORCE_TRANSLATE__ = args['force_translate_keys'] or []
-    __KEYS_FOLLOW_BASE__ = args['following_base_keys'] or []
+    __EXCLUDING_LANGS__ = args['excluding_lang_names']
+    __KEYS_FORCE_TRANSLATE__ = args['force_translate_keys']
+    __KEYS_FORCE_TRANSLATE_ALL__ = ('--force-translate-keys' in sys.argv or '-f' in sys.argv) and not __KEYS_FORCE_TRANSLATE__
+    __KEYS_FOLLOW_BASE__ = args['following_base_keys']
     __BASE_RESOUCE_DIR__ = None
 
     __LITERNAL_FORMAT__ = "%@"
@@ -169,7 +170,8 @@ def main():
         for item in base_content:
             base_kv[item['key']] = item['value']
 
-        adding_keys = list(((set(base_kv.keys()) - set(target_kv.keys())) | (set(base_kv.keys()) & set(__KEYS_FORCE_TRANSLATE__))) - set(__KEYS_FOLLOW_BASE__))
+        force_adding_keys = base_kv.keys() if __KEYS_FORCE_TRANSLATE_ALL__ else __KEYS_FORCE_TRANSLATE__
+        adding_keys = list(((set(base_kv.keys()) - set(target_kv.keys())) | (set(base_kv.keys()) & set(force_adding_keys))) - set(__KEYS_FOLLOW_BASE__))
         removing_keys = list(set(target_kv.keys()) - set(base_kv.keys()))
         existing_keys = list(set(base_kv.keys()) - (set(adding_keys) | set(removing_keys)))
         updated_keys = []
@@ -255,7 +257,7 @@ def main():
     def resolve_file_names(target_file_names):
         return map(lambda f: f.decode('utf-8'), filter(lambda f: f.endswith(__FILE_SUFFIX__), target_file_names))
 
-    base_dict = None
+    base_dict = {}
     results_dict = {}
 
     # Get Base Language Specs
@@ -264,7 +266,6 @@ def main():
 
     for dir, subdirs, files in walked:
         if os.path.basename(dir)==__BASE_RESOUCE_DIR__:
-            base_dict = {}
             for _file in resolve_file_names(files):
                 f = os.path.join(dir, _file)
                 if notexist_or_empty_file(f):

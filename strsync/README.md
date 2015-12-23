@@ -1,14 +1,20 @@
-![](https://cdn.rawgit.com/metasmile/strsync/master/logo.svg)
+![](https://cdn.rawgit.com/metasmile/strsync/master/logo_1_3.svg)
+
+[![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/vsouza/awesome-ios#tools)
+[![PyPI version](https://badge.fury.io/py/strsync.svg)](https://badge.fury.io/py/strsync)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/strsync.svg)](https://pypi.python.org/pypi/strsync)
+[![Code Health](https://landscape.io/github/metasmile/strsync/master/landscape.svg?style=flat)](https://landscape.io/github/metasmile/strsync/master)
+[![License](https://img.shields.io/pypi/l/strsync.svg)](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)
 
 Automatically translate and synchronize '.strings' files from defined base language.
 
 The basic concept of this tool is simple file name based one-way synchronizer.
-While the actual translation work, My biggest desire was to just fill an empty strings easily.
+While the actual translation work, My biggest desire was to just fill an empty strings quickly.
 In a normal project, automatic translation is sufficient. Because They are always simple sentences. Yes, No, Do it, Not agree, etc..
 
 If you are running, other localized resources will have exactly the same key with automatically translated strings. Of course, String on the key that already exists will not be modified at all.
 
-![](https://github.com/metasmile/metasmile.github.io/blob/master/static/strsync/desc1.png)
+![](https://github.com/metasmile/strsync/blob/master/structure.png)
 
 
 ## Requirements
@@ -62,6 +68,8 @@ optional arguments:
                         Client Secret key for MS Translation API
   -f [FORCE_TRANSLATE_KEYS ...], --force-translate-keys [FORCE_TRANSLATE_KEYS ...]
                         Keys in the strings to update and translate by force.
+  -fb [FOLLOWING_BASE_KEYS ...], --following-base-keys [FOLLOWING_BASE_KEYS ...]
+                        Keys in the strings to follow from "Base".
 ```
 
 ### Examples to use
@@ -81,7 +89,12 @@ $ strsync ./myXcodeProj/Resources/Localizations -c clien_idXXXX -s clien_secretX
 
 Forcefully translate and update by specific keys you want.
 ```
-$ strsync -c clien_idXXXX -s clien_secretXXXX -f Common.OK Common.Undo
+$ strsync -c clien_idXXXX -s clien_secretXXXX -f Common.OK Common.Undo "Key name which contains white space"
+```
+
+Forcefully translate and update by All keys.
+```
+$ strsync -c clien_idXXXX -s clien_secretXXXX -f  (input nothing)
 ```
 
 When you want to accept the values in the 'Base'.
@@ -100,6 +113,3 @@ $ strsync -c clien_idXXXX -s clien_secretXXXX -fb autoenhance flashmode
 "flashmode.on" = "على";
 "autoenhance" = "Auto-Enhance";
 ```
-
-
-
